@@ -40,13 +40,36 @@ def generate_model():
         # Sweep Geometry
         path = Line(p_hub, p_rim)
         with BuildPart() as spoke:
-            with BuildSketch(Plane(origin=p_hub, z_dir=path.direction_at(0))):
+            with BuildSketch(Plane(origin=p_hub, z_dir=path.tangent_at(0))):
                 Circle(radius=spoke_dia/2)
             sweep(path=path)
         spokes.append(spoke.part)
 
-    final_model = Compound(spokes)
-    export_step(final_model, "spokes.step")
+    # Bounding cones
+    r_hub_l = D_hub_l / 2.0
+    z_hub_l = -W_l
+    z_apex_l = z_hub_l / (1 - r_hub_l / R_rim)
+    with BuildPart() as cone_l_part:
+        with BuildSketch(Plane.XZ):
+            with BuildLine():
+                Polyline((0, z_apex_l), (R_rim, 0), (0, 0), close=True)
+            make_face()
+        revolve(axis=Axis.Z)
+    cone_l = cone_l_part.part
+
+    r_hub_r = D_hub_r / 2.0
+    z_hub_r = W_r
+    z_apex_r = z_hub_r / (1 - r_hub_r / R_rim)
+    with BuildPart() as cone_r_part:
+        with BuildSketch(Plane.XZ):
+            with BuildLine():
+                Polyline((0, z_apex_r), (R_rim, 0), (0, 0), close=True)
+            make_face()
+        revolve(axis=Axis.Z)
+    cone_r = cone_r_part.part
+
+    final_model = Compound(spokes + [cone_l, cone_r])
+    export_step(final_model, "spokes_with_cones.step")
     print("STEP file generated successfully.")
 
 if __name__ == "__main__":
