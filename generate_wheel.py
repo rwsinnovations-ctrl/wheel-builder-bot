@@ -34,8 +34,6 @@ def generate_model():
                     young_mod=70e9,
                     shear_mod=26e9)
 
-    R_rim = D_rim / 2.0
-
     # Add spokes
     for rim_idx in range(N):
         is_left = (rim_idx % 2 == 0)
