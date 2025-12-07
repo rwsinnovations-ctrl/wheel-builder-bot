@@ -2,8 +2,7 @@
 from build123d import *
 import numpy as np
 import os
-from bikewheelcalc import BicycleWheel, Rim, Hub, Spoke
-from bikewheelcalc.theory import calc_tor_stiff
+from bikewheelcalc import BicycleWheel, Rim, Hub, Spoke, ModeMatrix
 
 def generate_model():
     # Parameters injected from Colab
@@ -58,8 +57,25 @@ def generate_model():
     # Apply spoke tension
     wheel.apply_tension(1000.)
 
+    def calc_rot_stiff(wheel):
+        'Calculate rotational (wind-up) stiffness.'
+
+        # Create a ModeMatrix model with 24 modes
+        mm = ModeMatrix(wheel, N=24)
+
+        # Calculate stiffness matrix
+        K = mm.K_rim(tension=True) + mm.K_spk(smeared_spokes=False, tension=True)
+
+        # Create a unit tangential load at theta=0
+        F_ext = mm.F_ext(0., np.array([0., 0., 1., 0.]))
+
+        # Solve for the mode coefficients
+        dm = np.linalg.solve(K, F_ext)
+
+        return wheel.rim.radius / mm.rim_def_tan(0., dm)[0]
+
     # Calculate twist stiffness
-    tor_stiff = calc_tor_stiff(wheel)
+    tor_stiff = calc_rot_stiff(wheel)
     print(f'Torsional stiffness: {tor_stiff:.2f} [N-m/rad]')
 
     with open('twist_modulus.txt', 'w') as f:
