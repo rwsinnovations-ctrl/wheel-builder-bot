@@ -5,14 +5,14 @@ import os
 from bikewheelcalc import BicycleWheel, Rim, Hub, Spoke, ModeMatrix
 
 def generate_model():
-    # Parameters injected from Colab
+    # Update these to match your Trek 850 / Shimano Hub
     N = 32
-    D_rim = 600
-    D_hub_l = 58
-    D_hub_r = 58
-    W_l = 35
-    W_r = 20
     k = 3
+    D_rim = 540.0        # 26" Rim ERD
+    D_hub_l = 45.0       # Left Flange Dia
+    D_hub_r = 45.0       # Right Flange Dia
+    W_l = 36.0           # Left Flange Offset
+    W_r = 21.0           # Right Flange Offset
     spoke_dia = 2.0
 
     print(f"Generating wheel with N={N}, k={k}...")
