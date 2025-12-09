@@ -14,7 +14,22 @@ def generate_model():
     W_r = 20
     k = 3
     spoke_dia = 2.0
-
+# --- 1. PARAMETERS FOR TREK 850 (Standard Shimano Hub) ---
+    N = 32               # Spoke Count (Check your wheel: could be 36)
+    k = 3                # Cross Pattern (Standard is 3-cross)
+    spoke_dia = 2.0      # Standard 14g spoke thickness (mm)
+    
+    # 26" MTB Rim (ISO 559)
+    D_rim = 540.0        # Effective Rim Diameter (~540mm for 26")
+    
+    # Standard Shimano Rear Hub Dimensions
+    # Left (Non-Drive Side)
+    W_l = 36.0           # Center to Left Flange (mm)
+    D_hub_l = 45.0       # Left Flange Diameter (mm)
+    
+    # Right (Drive Side)
+    W_r = 21.0           # Center to Right Flange (mm)
+    D_hub_r = 45.0       # Right Flange Diameter (mm)
     print(f"Generating wheel with N={N}, k={k}...")
 
     wheel = BicycleWheel()
